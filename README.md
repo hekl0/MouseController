@@ -1,6 +1,6 @@
 # MouseController
 
-Control computer mouse with face gestures using machine learning
+A machine learning project to control computer mouse with face gestures
 
 ### Run
 
