@@ -1,0 +1,6 @@
+python3
+cv2
+dlib
+imutils
+numpy
+pyautogui
