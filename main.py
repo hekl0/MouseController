@@ -1,5 +1,5 @@
 import cv2
-import face_detector
+import FaceDetector
 import MouseController
 
 SCREEN_W = 1920
@@ -7,7 +7,6 @@ SCREEN_H = 1080
 CAM_W = 640
 CAM_H = 480
 ANCHOR_POINT = (CAM_W//2, CAM_H//3)
-
 
 if __name__ == '__main__':
     vid = cv2.VideoCapture(0)
@@ -22,14 +21,14 @@ if __name__ == '__main__':
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # Find a face amd get eyes and nose from it
-        faces = face_detector.get_faces(gray_frame)
+        faces = FaceDetector.get_faces(gray_frame)
         if len(faces) == 0:
             cv2.imshow('Test', frame)
             key = cv2.waitKey(1)
             if key == 27:
                 break
             continue
-        leftEye, rightEye, nose = face_detector.get_eyes_and_nose(gray_frame, faces[0])
+        leftEye, rightEye, nose = FaceDetector.get_eyes_and_nose(gray_frame, faces[0])
 
         # Show eyes
         leftEyeHull = cv2.convexHull(leftEye)
@@ -50,4 +49,3 @@ if __name__ == '__main__':
         key = cv2.waitKey(1)
         if key == 27:
             break
-h
