@@ -22,25 +22,22 @@ class MouseController:
         left_EAR = self.eye_aspect_ratio_algorithm(left_eye)
         right_EAR = self.eye_aspect_ratio_algorithm(right_eye)
 
-        if left_EAR < EAR_THRESHOLD and left_EAR < right_EAR:
-            self.left_mouse_down = True
-            self.right_mouse_down = False
-        elif right_EAR < EAR_THRESHOLD and right_EAR < left_EAR:
-            self.right_mouse_down = True
+        if self.left_mouse_down and left_EAR >= EAR_THRESHOLD:
             self.left_mouse_down = False
-        else:
-            self.left_mouse_down = False
+            os.system('xdotool mouseup 1')
+        if self.right_mouse_down and right_EAR >= EAR_THRESHOLD:
             self.right_mouse_down = False
-
-        if self.left_mouse_down:
-            os.system('xdotool mousedown 1') 
-        else:
-            os.system('xdotool mouseup 1') 
-
-        if self.right_mouse_down:
-            os.system('xdotool mousedown 3')
-        else:
             os.system('xdotool mouseup 3')
+
+        if not self.left_mouse_down and not self.right_mouse_down:
+            if left_EAR < EAR_THRESHOLD and left_EAR < right_EAR:
+                self.left_mouse_down = True
+                os.system('xdotool mousedown 1') 
+                print('LEFT')
+            elif right_EAR < EAR_THRESHOLD and right_EAR < left_EAR:
+                self.right_mouse_down = True
+                os.system('xdotool mousedown 3')
+                print('RIGHT')
 
 
 def mouse_click(left_eye, right_eye):
