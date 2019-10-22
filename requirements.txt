@@ -5,3 +5,4 @@ imutils
 numpy
 pyautogui
 xdotool
+screeninfo
