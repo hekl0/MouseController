@@ -61,8 +61,6 @@ class MouseController:
             self.scroll_down = False
             self.scroll_up = True
         elif nose[6,1] > self.last_nose_position*11/10:
-            self.cak += 1
-            print(self.cak)
             self.scroll_down = True
             self.scroll_up = False
         else:

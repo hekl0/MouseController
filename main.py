@@ -38,6 +38,9 @@ if __name__ == '__main__':
         cv2.drawContours(frame, [rightEyeHull], -1, (0, 255, 255), 1)
 
         # Check eyes and click
+        MouseController.mouse_click(leftEye, rightEye)
+
+        # Check mouth and scroll
         MouseController.nose_upper_limit = nose[6,1] + 15
         MouseController.nose_lower_limit = nose[6,1] - 15
         MouseController.mouse_scroll(nose,mouth)
