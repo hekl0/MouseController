@@ -11,6 +11,10 @@ class MouseController:
     def __init__(self):
         self.left_mouse_down = False
         self.right_mouse_down = False
+        self.scroll_up = False
+        self.scroll_down = False
+        self.last_nose_position = 0
+        self.cak = 0
 
     def eye_aspect_ratio_algorithm(self, eye):
         height1 = np.linalg.norm(eye[1] - eye[5])
@@ -42,6 +46,35 @@ class MouseController:
         else:
             os.system('xdotool mouseup 3')
 
+    def mouse_scroll(self, nose, mouth):
+        ratio =  (mouth[9,1] - mouth[3,1])/(mouth[6,0] - mouth[0,0])
+        # print(ratio)
+        if ratio < 0.5: 
+            self.last_nose_position = 0
+            return 
+
+        # print(self.last_nose_position)
+        if self.last_nose_position == 0: 
+            self.last_nose_position = nose[6,1]
+
+        if nose[6,1] < self.last_nose_position*9/10:
+            self.scroll_down = False
+            self.scroll_up = True
+        elif nose[6,1] > self.last_nose_position*11/10:
+            self.cak += 1
+            print(self.cak)
+            self.scroll_down = True
+            self.scroll_up = False
+        else:
+            self.scroll_down = False
+            self.scroll_up = False
+
+        if self.scroll_down:
+            os.system('xdotool key Down') 
+            
+        if self.scroll_up:
+            os.system('xdotool key Up') 
+
 
 def mouse_click(left_eye, right_eye):
     global mouseController
@@ -49,3 +82,13 @@ def mouse_click(left_eye, right_eye):
     if mouseController is None:
         mouseController = MouseController()
     mouseController.mouse_click(left_eye, right_eye)
+
+def mouse_scroll(nose, mouth):
+    global mouseController
+
+    if mouseController is None:
+        mouseController = MouseController()
+        mouseController.nose_upper_limit = nose[6,1] + 15
+        mouseController.nose_lower_limit = nose[6,1] - 15
+    mouseController.mouse_scroll(nose, mouth)
+

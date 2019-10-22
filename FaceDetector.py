@@ -1,7 +1,7 @@
 import dlib
 from imutils import face_utils
 
-SHAPE_PREDICTOR_68_FACE_LANDMARKS = 'model/shape_predictor_68_face_landmarks.dat'
+SHAPE_PREDICTOR_68_FACE_LANDMARKS = '/home/tb/Desktop/FacialMouseController/model/shape_predictor_68_face_landmarks.dat'
 
 faceDetector = None
 
@@ -27,7 +27,14 @@ class FaceDetector:
         nose = self.get_face_part(landmarks, 'nose')
 
         return left_eye, right_eye, nose
+    
+    def get_mouth(self, frame, face): 
+        landmarks = self.landmarks_detector(frame, face)
+        landmarks = face_utils.shape_to_np(landmarks)
 
+        mouth = self.get_face_part(landmarks, 'mouth')
+
+        return mouth
 
 def get_faces(frame):
     global faceDetector
@@ -43,3 +50,10 @@ def get_eyes_and_nose(frame, face):
     if faceDetector is None:
         faceDetector = FaceDetector()
     return faceDetector.get_eyes_and_nose(frame, face)
+
+def get_mouth(frame, face): 
+    global faceDetector
+
+    if faceDetector is None:
+        faceDetector = FaceDetector()
+    return faceDetector.get_mouth(frame, face)

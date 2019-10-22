@@ -29,6 +29,7 @@ if __name__ == '__main__':
                 break
             continue
         leftEye, rightEye, nose = FaceDetector.get_eyes_and_nose(gray_frame, faces[0])
+        mouth = FaceDetector.get_mouth(gray_frame, faces[0])
 
         # Show eyes
         leftEyeHull = cv2.convexHull(leftEye)
@@ -37,11 +38,22 @@ if __name__ == '__main__':
         cv2.drawContours(frame, [rightEyeHull], -1, (0, 255, 255), 1)
 
         # Check eyes and click
-        MouseController.mouse_click(leftEye, rightEye)
+        MouseController.nose_upper_limit = nose[6,1] + 15
+        MouseController.nose_lower_limit = nose[6,1] - 15
+        MouseController.mouse_scroll(nose,mouth)
 
         # Show nose
         nose_point = (nose[3, 0], nose[3, 1])
         cv2.line(frame, ANCHOR_POINT, nose_point, (255, 0, 0), 2)
+        
+        # Show mouth
+        upper_lips = (mouth[9,0], mouth[9,1])
+        under_lips = (mouth[3,0], mouth[3,1])
+        left_of_lips = (mouth[0,0], mouth[0,1])
+        right_of_lips = (mouth[6,0], mouth[6,1])
+        cv2.line(frame, upper_lips, under_lips, (255, 0, 0), 2)
+        cv2.line(frame, left_of_lips, right_of_lips, (255, 0, 0), 2 )
+        
 
         cv2.imshow("Test", frame)
 
