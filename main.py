@@ -1,19 +1,25 @@
 import cv2
 import FaceDetector
 import MouseController
+import time
 
-SCREEN_W = 1920
-SCREEN_H = 1080
 CAM_W = 640
 CAM_H = 480
-ANCHOR_POINT = (CAM_W//2, CAM_H//3)
+
+FRAME_RATE = 30
 
 if __name__ == '__main__':
     vid = cv2.VideoCapture(0)
     vid.set(cv2.CAP_PROP_FRAME_WIDTH, CAM_W)
     vid.set(cv2.CAP_PROP_FRAME_HEIGHT, CAM_H)
 
+    prev = 0
     while True:
+        if time.time() - prev <= 1./FRAME_RATE:
+            continue
+        else:
+            prev = time.time()
+
         _, frame = vid.read()
         frame = cv2.flip(frame, 1)
 
@@ -39,9 +45,9 @@ if __name__ == '__main__':
         # Check eyes and click
         MouseController.mouse_click(leftEye, rightEye)
 
-        # Show nose
-        nose_point = (nose[3, 0], nose[3, 1])
-        cv2.line(frame, ANCHOR_POINT, nose_point, (255, 0, 0), 2)
+        # Move mouse according to nose position
+        nose_center = (nose[3, 0], nose[3, 1])
+        MouseController.mouse_move(nose_center)
 
         cv2.imshow("Test", frame)
 
