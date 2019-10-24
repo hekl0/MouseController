@@ -14,7 +14,6 @@ class MouseController:
         self.scroll_up = False
         self.scroll_down = False
         self.last_nose_position = 0
-        self.cak = 0
 
     def eye_aspect_ratio_algorithm(self, eye):
         height1 = np.linalg.norm(eye[1] - eye[5])
@@ -61,8 +60,6 @@ class MouseController:
             self.scroll_down = False
             self.scroll_up = True
         elif nose[6,1] > self.last_nose_position*11/10:
-            self.cak += 1
-            print(self.cak)
             self.scroll_down = True
             self.scroll_up = False
         else:
