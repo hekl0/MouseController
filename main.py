@@ -43,11 +43,21 @@ if __name__ == '__main__':
         cv2.drawContours(frame, [rightEyeHull], -1, (0, 255, 255), 1)
 
         # Check eyes and click
-        MouseController.mouse_click(leftEye, rightEye)
+        # MouseController.mouse_click(leftEye, rightEye)
 
         # Move mouse according to nose position
         nose_center = (nose[3, 0], nose[3, 1])
         MouseController.mouse_move(nose_center)
+
+        # Showing mouse move bound
+        if (MouseController.get_center() is not None):
+            cv2.circle(
+                frame, 
+                MouseController.get_center(), 
+                MouseController.get_radius(), 
+                (0, 255, 255), 
+                1
+            )
 
         cv2.imshow("Test", frame)
 
