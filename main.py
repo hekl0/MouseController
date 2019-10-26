@@ -56,7 +56,7 @@ if __name__ == '__main__':
 
         # Check eyes and click
         MouseController.mouse_click(rightEye, leftEye, right_eyebrow, left_eyebrow, mouth)
-
+        
         # Check mouth and scroll
         MouseController.mouse_scroll(nose,mouth)
         
@@ -71,6 +71,16 @@ if __name__ == '__main__':
         right_of_lips = (mouth[6,0], mouth[6,1])
         cv2.line(frame, upper_lips, under_lips, (255, 0, 0), 2)
         cv2.line(frame, left_of_lips, right_of_lips, (255, 0, 0), 2 )
+
+        # Showing mouse move bound
+        if (MouseController.get_center() is not None):
+            cv2.circle(
+                frame, 
+                MouseController.get_center(), 
+                MouseController.get_radius(), 
+                (0, 255, 255), 
+                1
+            )
 
         cv2.imshow("Test", frame)
 
