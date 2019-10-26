@@ -5,6 +5,9 @@ import screeninfo
 
 EAR_THRESHOLD = 0.25
 BOUND_RADIUS = 10
+QUEUE_SIZE = 6
+MOVE_THRESHOLD = 2
+SCALE = 7
 SCREEN_W = screeninfo.get_monitors()[0].width
 SCREEN_H = screeninfo.get_monitors()[0].height
 
@@ -15,10 +18,12 @@ class MouseController:
     def __init__(self):
         self.left_mouse_down = False
         self.right_mouse_down = False
-        self.origin_point = None
+        self.queue = []
 
     def get_center(self):
-        return self.origin_point
+        if len(self.queue) == 0:
+            return (0, 0)
+        return self.queue[-1]
 
     def eye_aspect_ratio_algorithm(self, eye):
         height1 = np.linalg.norm(eye[1] - eye[5])
@@ -48,13 +53,19 @@ class MouseController:
                 print('RIGHT')
 
     def mouse_move(self, nose):
-        if self.origin_point == None:
-            self.origin_point = nose
+        self.queue.append(nose)
+        if len(self.queue) < QUEUE_SIZE:
             return
-        x = nose[0] - self.origin_point[0]
-        y = nose[1] - self.origin_point[1]
-        if (x**2 + y**2 > BOUND_RADIUS**2):
-            os.system('xdotool mousemove_relative -- {} {}'.format(x, y))
+
+        has_moved = False
+        for pos in self.queue:
+            if abs(self.queue[-1][0] - pos[0]) > MOVE_THRESHOLD or abs(self.queue[-1][1] - pos[1]) > MOVE_THRESHOLD:
+                    has_moved = True
+        
+        if has_moved:
+            os.system('xdotool mousemove_relative -- {} {}'.format((nose[0] - self.queue[-2][0]) * SCALE, (nose[1] - self.queue[-2][1]) * SCALE))
+
+        self.queue = self.queue[1:]
 
 
 def mouse_click(left_eye, right_eye):
