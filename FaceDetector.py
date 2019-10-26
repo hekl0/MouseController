@@ -1,7 +1,7 @@
 import dlib
 from imutils import face_utils
 
-SHAPE_PREDICTOR_68_FACE_LANDMARKS = '/home/tb/Desktop/FacialMouseController/model/shape_predictor_68_face_landmarks.dat'
+SHAPE_PREDICTOR_68_FACE_LANDMARKS = 'model/shape_predictor_68_face_landmarks.dat'
 
 faceDetector = None
 
