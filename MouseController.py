@@ -60,12 +60,10 @@ class MouseController:
         if not self.left_mouse_down and not self.right_mouse_down:
             if left < right*9/10 and left < self.last_left:
                 self.left_mouse_down = True
-                # os.system('xdotool mousedown 1') 
-                print('LEFT')
+                os.system('xdotool mousedown 1') 
             elif right < left*9/10 and right < self.last_right:
                 self.right_mouse_down = True
-                # os.system('xdotool mousedown 3')
-                print('RIGHT')
+                os.system('xdotool mousedown 3')
         
         self.last_left = left
         self.last_right = right
