@@ -2,6 +2,7 @@ import cv2
 import FaceDetector
 import MouseController
 import time
+import math
 
 CAM_W = 640
 CAM_H = 480
@@ -34,18 +35,29 @@ if __name__ == '__main__':
             if key == 27:
                 break
             continue
-        leftEye, rightEye, nose = FaceDetector.get_eyes_and_nose(gray_frame, faces[0])
-        mouth = FaceDetector.get_mouth(gray_frame, faces[0])
+        leftEye, rightEye, nose, mouth, right_eyebrow, left_eyebrow = FaceDetector.get_essential(gray_frame, faces[0])
 
         # Show eyes
         leftEyeHull = cv2.convexHull(leftEye)
         rightEyeHull = cv2.convexHull(rightEye)
         cv2.drawContours(frame, [leftEyeHull], -1, (0, 255, 255), 1)
         cv2.drawContours(frame, [rightEyeHull], -1, (0, 255, 255), 1)
+        lower_leftEye = (leftEye[0,0], leftEye[0,1])
+        lower_rightEye = (rightEye[3,0], rightEye[3,1])
+        left_edge_nose = (nose[4,0], nose[4,1])
+        right_edge_nose = (nose[8,0], nose[8,1])
+        top_of_nose = (nose[0,0], nose[0,1])
+        right_eyebrow_point = (right_eyebrow[4,0], right_eyebrow[4,1])
+        left_eyebrow_point = (left_eyebrow[0,0], left_eyebrow[0,1])
+        cv2.line(frame,left_edge_nose, top_of_nose, (255, 0, 0), 2)
+        cv2.line(frame,right_edge_nose, top_of_nose, (255, 0, 0), 2)
+        cv2.line(frame,lower_rightEye, right_eyebrow_point, (255, 0, 0), 2)
+        cv2.line(frame,lower_leftEye, left_eyebrow_point, (255, 0, 0), 2)
 
         # Check eyes and click
-        MouseController.nose_upper_limit = nose[6,1] + 15
-        MouseController.nose_lower_limit = nose[6,1] - 15
+        MouseController.mouse_click(rightEye, leftEye, right_eyebrow, left_eyebrow, mouth)
+        
+        # Check mouth and scroll
         MouseController.mouse_scroll(nose,mouth)
         
         # Show mouth
@@ -55,8 +67,6 @@ if __name__ == '__main__':
         right_of_lips = (mouth[6,0], mouth[6,1])
         cv2.line(frame, upper_lips, under_lips, (255, 0, 0), 2)
         cv2.line(frame, left_of_lips, right_of_lips, (255, 0, 0), 2 )
-        
-        # MouseController.mouse_click(leftEye, rightEye)
 
         # Move mouse according to nose position
         nose_center = (nose[3, 0], nose[3, 1])

@@ -18,23 +18,18 @@ class FaceDetector:
         start, end = face_utils.FACIAL_LANDMARKS_IDXS[face_part]
         return landmarks[start:end]
 
-    def get_eyes_and_nose(self, frame, face):
+    def get_essential(self, frame, face):
         landmarks = self.landmarks_detector(frame, face)
         landmarks = face_utils.shape_to_np(landmarks)
 
-        left_eye = self.get_face_part(landmarks, 'right_eye')
-        right_eye = self.get_face_part(landmarks, 'left_eye')
+        left_eye = self.get_face_part(landmarks, 'left_eye')
+        right_eye = self.get_face_part(landmarks, 'right_eye')
         nose = self.get_face_part(landmarks, 'nose')
-
-        return left_eye, right_eye, nose
-    
-    def get_mouth(self, frame, face): 
-        landmarks = self.landmarks_detector(frame, face)
-        landmarks = face_utils.shape_to_np(landmarks)
-
         mouth = self.get_face_part(landmarks, 'mouth')
+        right_eyebrow = self.get_face_part(landmarks, 'right_eyebrow')
+        left_eyebrow = self.get_face_part(landmarks, 'left_eyebrow')
 
-        return mouth
+        return left_eye, right_eye, nose, mouth, right_eyebrow, left_eyebrow
 
 def get_faces(frame):
     global faceDetector
@@ -44,16 +39,10 @@ def get_faces(frame):
     return faceDetector.get_faces(frame)
 
 
-def get_eyes_and_nose(frame, face):
+def get_essential(frame, face):
     global faceDetector
 
     if faceDetector is None:
         faceDetector = FaceDetector()
-    return faceDetector.get_eyes_and_nose(frame, face)
+    return faceDetector.get_essential(frame, face)
 
-def get_mouth(frame, face): 
-    global faceDetector
-
-    if faceDetector is None:
-        faceDetector = FaceDetector()
-    return faceDetector.get_mouth(frame, face)
