@@ -1,8 +1,13 @@
 import numpy as np
 import pyautogui
 import os
+import screeninfo
 
 EAR_THRESHOLD = 0.25
+BOUND_RADIUS = 10
+SCALE = 10
+SCREEN_W = screeninfo.get_monitors()[0].width
+SCREEN_H = screeninfo.get_monitors()[0].height
 
 mouseController = None
 
@@ -14,6 +19,10 @@ class MouseController:
         self.scroll_up = False
         self.scroll_down = False
         self.last_nose_position = 0
+        self.origin_point = None
+
+    def get_center(self):
+        return self.origin_point
 
     def eye_aspect_ratio_algorithm(self, eye):
         height1 = np.linalg.norm(eye[1] - eye[5])
@@ -25,25 +34,41 @@ class MouseController:
         left_EAR = self.eye_aspect_ratio_algorithm(left_eye)
         right_EAR = self.eye_aspect_ratio_algorithm(right_eye)
 
-        if left_EAR < EAR_THRESHOLD and left_EAR < right_EAR:
-            self.left_mouse_down = True
-            self.right_mouse_down = False
-        elif right_EAR < EAR_THRESHOLD and right_EAR < left_EAR:
-            self.right_mouse_down = True
+        if self.left_mouse_down and left_EAR >= EAR_THRESHOLD:
             self.left_mouse_down = False
-        else:
-            self.left_mouse_down = False
+            os.system('xdotool mouseup 1')
+        if self.right_mouse_down and right_EAR >= EAR_THRESHOLD:
             self.right_mouse_down = False
-
-        if self.left_mouse_down:
-            os.system('xdotool mousedown 1') 
-        else:
-            os.system('xdotool mouseup 1') 
-
-        if self.right_mouse_down:
-            os.system('xdotool mousedown 3')
-        else:
             os.system('xdotool mouseup 3')
+
+        if not self.left_mouse_down and not self.right_mouse_down:
+            if left_EAR < EAR_THRESHOLD and left_EAR < right_EAR:
+                self.left_mouse_down = True
+                os.system('xdotool mousedown 1') 
+                print('LEFT')
+            elif right_EAR < EAR_THRESHOLD and right_EAR < left_EAR:
+                self.right_mouse_down = True
+                os.system('xdotool mousedown 3')
+                print('RIGHT')
+
+    def mouse_move(self, nose):
+        if self.origin_point is None:
+            self.origin_point = nose
+            return
+
+        x = (nose[0] - self.origin_point[0]) 
+        y = (nose[1] - self.origin_point[1]) 
+        if abs(x) == 1:
+            x = 0
+        if abs(y) == 1:
+            y = 0
+        if abs(x) == 2:
+            x /= 2
+        if abs(y) == 2:
+            y /= 2
+        os.system('xdotool mousemove_relative -- {} {}'.format(x * SCALE, y * SCALE))
+
+        self.origin_point = nose
 
     def mouse_scroll(self, nose, mouth):
         ratio =  (mouth[9,1] - mouth[3,1])/(mouth[6,0] - mouth[0,0])
@@ -89,3 +114,19 @@ def mouse_scroll(nose, mouth):
         mouseController.nose_lower_limit = nose[6,1] - 15
     mouseController.mouse_scroll(nose, mouth)
 
+def mouse_move(nose):
+    global mouseController
+    
+    if mouseController is None:
+        mouseController = MouseController()
+    mouseController.mouse_move(nose)
+
+def get_center():
+    global mouseController
+    
+    if mouseController is None:
+        mouseController = MouseController()
+    return mouseController.get_center()
+
+def get_radius():
+    return BOUND_RADIUS
