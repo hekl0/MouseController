@@ -51,10 +51,10 @@ class MouseController:
         if self.last_right == 0:
             self.last_right = right
 
-        if self.left_mouse_down and left >= right - 2:
+        if self.left_mouse_down and left >= right*9/10:
             self.left_mouse_down = False
             os.system('xdotool mouseup 1')
-        if self.right_mouse_down and right >= left - 2:
+        if self.right_mouse_down and right >= left*9/10:
             self.right_mouse_down = False
             os.system('xdotool mouseup 3')
 
