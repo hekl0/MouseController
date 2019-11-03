@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
         # Move mouse according to nose position
         nose_center = (nose[3, 0], nose[3, 1])
-        MouseController.mouse_move(nose_center)
+        MouseController.mouse_move(nose_center, mouth)
 
         # Showing mouse move bound
         if (MouseController.get_center() is not None):

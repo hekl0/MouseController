@@ -70,7 +70,12 @@ class MouseController:
         self.last_right = right
 
 
-    def mouse_move(self, nose):
+    def mouse_move(self, nose, mouth):
+        if self.left_mouse_down == True or self.right_mouse_down == True: return
+        mouth_ratio =  (mouth[9,1] - mouth[3,1])/(mouth[6,0] - mouth[0,0])
+        if mouth_ratio >= 0.5: 
+            return 
+
         if self.origin_point is None:
             self.origin_point = nose
             return
@@ -129,12 +134,12 @@ def mouse_scroll(nose, mouth):
         mouseController = MouseController()
     mouseController.mouse_scroll(nose, mouth)
 
-def mouse_move(nose):
+def mouse_move(nose, mouth):
     global mouseController
     
     if mouseController is None:
         mouseController = MouseController()
-    mouseController.mouse_move(nose)
+    mouseController.mouse_move(nose, mouth)
 
 def get_center():
     global mouseController
