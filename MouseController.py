@@ -6,6 +6,7 @@ import math
 
 EAR_THRESHOLD = 0.25
 BOUND_RADIUS = 10
+SCALE = 10
 SCREEN_W = screeninfo.get_monitors()[0].width
 SCREEN_H = screeninfo.get_monitors()[0].height
 
@@ -70,13 +71,23 @@ class MouseController:
 
 
     def mouse_move(self, nose):
-        if self.origin_point == None:
+        if self.origin_point is None:
             self.origin_point = nose
             return
-        x = nose[0] - self.origin_point[0]
-        y = nose[1] - self.origin_point[1]
-        if (x**2 + y**2 > BOUND_RADIUS**2):
-            os.system('xdotool mousemove_relative -- {} {}'.format(x, y))
+
+        x = (nose[0] - self.origin_point[0]) 
+        y = (nose[1] - self.origin_point[1]) 
+        if abs(x) == 1:
+            x = 0
+        if abs(y) == 1:
+            y = 0
+        if abs(x) == 2:
+            x /= 2
+        if abs(y) == 2:
+            y /= 2
+        os.system('xdotool mousemove_relative -- {} {}'.format(x * SCALE, y * SCALE))
+
+        self.origin_point = nose
 
     def mouse_scroll(self, nose, mouth):
         mouth_ratio =  (mouth[9,1] - mouth[3,1])/(mouth[6,0] - mouth[0,0])
