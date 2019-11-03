@@ -50,10 +50,10 @@ class MouseController:
         if self.last_right == 0:
             self.last_right = right
 
-        if self.left_mouse_down and left >= self.last_left:
+        if self.left_mouse_down and left >= right - 2:
             self.left_mouse_down = False
             os.system('xdotool mouseup 1')
-        if self.right_mouse_down and right >= self.last_right:
+        if self.right_mouse_down and right >= left - 2:
             self.right_mouse_down = False
             os.system('xdotool mouseup 3')
 
@@ -67,6 +67,7 @@ class MouseController:
         
         self.last_left = left
         self.last_right = right
+
 
     def mouse_move(self, nose):
         if self.origin_point == None:
